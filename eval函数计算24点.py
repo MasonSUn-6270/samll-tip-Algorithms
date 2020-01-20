@@ -53,3 +53,6 @@ for card_ in cards_iter():
                     print(i)
             except ZeroDivisionError:
                 ...
+
+def foo():
+    pass
