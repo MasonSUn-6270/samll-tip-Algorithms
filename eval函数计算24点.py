@@ -1,4 +1,5 @@
 import itertools
+import re
 
 """
 def eval(*args, **kwargs): # real signature unknown
@@ -30,16 +31,25 @@ def symbol_iter():
         yield i
 
 
-def check_24(**kwargs):
-    for i in kwargs.values():
-        if eval(i) == 24:
-            print(i)
-
-
 for card_ in cards_iter():
     for symbol_ in symbol_iter():
-        check_24(
-            ev1=' {0}{4} {1} {5} {2} {6} {3}  '.format(*card_, *symbol_),
-            ev2=' ({0}{4} {1}) {5} {2} {6} {3}  '.format(*card_, *symbol_),
-            ev3=' (({0}{4} {1}) {5} {2}) {6} {3}  '.format(*card_, *symbol_),
-        )
+        ev1 = '{0}{4}{1}{5}{2}{6}{3}'.format(*card_, *symbol_)
+        ev2, ev3,ev4 = '', '',''
+        if '{4}'.format(*card_, *symbol_) in '+-' and '{5}'.format(*card_, *symbol_) in '*/':
+            ev2 = '({0}{4}{1}){5}{2}{6}{3}'.format(*card_, *symbol_)
+        else:
+            ev2 = '0'
+        if '{4}'.format(*card_, *symbol_) in '+-' and '{5}'.format(*card_, *symbol_) in '+-'and '{6}'.format(*card_, *symbol_) in '*/':
+            ev3 = '({0}{4}{1}{5}{2}){6}{3}'.format(*card_, *symbol_)
+        else:
+            ev3 = '0'
+        if '{4}'.format(*card_, *symbol_) in '+-' and '{5}'.format(*card_, *symbol_) in '*/'and '{6}'.format(*card_, *symbol_) in '+-':
+            ev4 = '({0}{4}{1}){5}({2}{6}{3})'.format(*card_, *symbol_)
+        else:
+            ev4 = '0'
+        for i in [ev1, ev2, ev3,ev4]:
+            try:
+                if eval(i) == 24:
+                    print(i)
+            except ZeroDivisionError:
+                ...
